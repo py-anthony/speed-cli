@@ -122,7 +122,19 @@ files = [
     {file = "tomli-2.0.1.tar.gz", hash = "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"},
 ]
 
+[[package]]
+name = "wind-parser"
+version = "0.1.1"
+description = "Python wind parser is a parser used to retrieve arguments for command line interfaces and turn them into python dictionary"
+category = "main"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "wind_parser-0.1.1-py3-none-any.whl", hash = "sha256:3d8f23d50889ffa1032aadfc161bde1b7a355251ac97170b62a36587449a491d"},
+    {file = "wind_parser-0.1.1.tar.gz", hash = "sha256:37b6798b2e1da4dda0c1cf7d784ec3d0bafe4ba341798c4ff5f18a4768f0cd11"},
+]
+
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "6c7ab9141c05aad0be6e0c5e9d85ce33639bf9676bde7644a95e1daea22699fc"
+content-hash = "973899f8d08bf2f0eb4e57ca2c4138901a164373f7f62012913bd4c255f117b2"

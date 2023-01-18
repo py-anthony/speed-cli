@@ -1,8 +1,8 @@
 import sys
-import inspect
+
 from collections import deque
 from wind_parser import Parser
-from utils.utils import *
+from .utils import *
 
 # Not yet finished
 class Config:
@@ -16,52 +16,43 @@ class Config:
         return f"Config :\n {self.args}"
 
 
-def struct_args(function):
-    """Structure a function's arguments like:
-    { 
-        arg1 : (default_value, annotation), 
-        arg2 : (default_value, annotation)
-        ...  : ...
-    }
-    If default value doesn't exist, then use None instead, if annotation doesn't exist, raise an TypeError.
-    """
-    function_spec = inspect.getfullargspec(function)
-    structured_data = {}
-
-    defaults = deque(function_spec.defaults)
-    args = function_spec.args
-    defaults.extendleft([None]*(len(args)-len(defaults)))
-
-    for i in range(len(args)):
-        structured_data[args[i]] = (custom_type(function_spec.annotations[args[i]]), defaults[i])
-    
-    return structured_data
-
-
 class Speed:
-    def __init__(self, name=__name__):
+    def __init__(self, name="Speed"):
         self.name = name
-        self.registry = {}
+        self.registry = {"kwargs": {},"flags": {},"lists": {}}
 
-    def kwarg(self, required=False, short_name=False):
-        """Transform function parameters into cli flag"""
-        pass
-            
-
-    def flag(self, required=False, short_name=False):
-        """Transform function parameters into cli argument"""
-        pass
-
-    def list(self):
-        """Transform function parameters into cli list argument"""
-        pass
+    # TODO: Add `required` and `short_name` functionalities
+    def transform(self, required=False, short_name=False):
+        """Transform function parameters into cli arguments"""
+        def wrapper(component:Callable):
+            fargs : Dict  = struct_args(component)
+            if mergeable(self.registry, fargs):
+                for arg in fargs:
+                    if hasattr(fargs[arg][0], "BOOL"):
+                        self.registry["flags"][arg] = fargs[arg]
+                    
+                    elif hasattr(fargs[arg][0], "STR") or hasattr(fargs[arg][0], "INT"):
+                        self.registry["kwargs"][arg] = fargs[arg]
+                    
+                    elif hasattr(fargs[arg][0], "LIST"):
+                        self.registry["lists"][arg] = fargs[arg]
+            return component
+        return wrapper
 
     def run(self):
         pass
+    
+    def __repr__(self):
+        return f"<[ {self.name} ] : {' | '.join([i+': '+str(len(self.registry[i])) for i in self.registry.keys()])} >"
 
+def main():
+    app = Speed("App")
 
-if __name__ == '__main__':
-    def test(anthony:list, nom:str="Anthony", age:int=16):
+    @app.transform(required=True, short_name=True)
+    def comp(cities:list = ["1","2","3"],name:str="Anthony", age:int=16):
         pass
-    print(struct_args(test))
+    
+
+    print(app.registry)
+    print(app)
 
