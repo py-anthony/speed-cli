@@ -1,6 +1,6 @@
 import inspect
 from typing import Dict, List, Union, Callable
-from collections import deque
+from collections import deque, defaultdict
 from pprint import pprint
 from ._types import custom_type
 
