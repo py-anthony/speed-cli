@@ -36,7 +36,7 @@ class Speed:
             fargs : Dict  = struct_args(component)
             if mergeable(self.config, fargs):
                 self.config.add_arguments(component, fargs)
-
+            
             return component
         return wrapper
 
@@ -46,15 +46,5 @@ class Speed:
     def __repr__(self):
         #return f"<[ {self.name} ] : {' | '.join([i+': '+str(len(self.config[i])) for i in self.config.keys()])} >"
         return str(self.config)
-
-def main():
-    config = Config()
-    app = Speed(name="App", config=config)
-
-    @app.transform(required=True, short_name=True)
-    def comp(cities:list = ["1","2","3"],name:str="Anthony", age:int=16):
-        pass
-
-    print(app)
 
 
