@@ -1,5 +1,3 @@
-import sys
-
 from wind_parser import Parser
 from .utils import *
 
@@ -8,43 +6,39 @@ class Config(dict):
     def __init__(self):
         super().__init__()
 
-    def add_arguments(self, function, args:Dict) -> None:
-        template = defaultdict(dict)
+    def add_subcommand(self, function, args:Dict) -> None:
+        args_dict = defaultdict(dict)
         
         for arg in args:
             if hasattr(args[arg][0], "BOOL"):
-                template["flags"][arg] = args[arg]
+                args_dict["flags"][arg] = args[arg]
             
             elif hasattr(args[arg][0], "STR") or hasattr(args[arg][0], "INT"):
-                template["kwargs"][arg] = args[arg]
+                args_dict["kwargs"][arg] = args[arg]
             
             elif hasattr(args[arg][0], "LIST"):
-                template["lists"][arg] = args[arg]
+                args_dict["lists"][arg] = args[arg]
         
-        self[function] = template
-
+        self[function] = dict(args_dict)
+                
 class Speed:
-    # TODO: Add support for toml or json configuration support (not urgent)
-    def __init__(self, config, name="Speed", file=None):
+    def __init__(self, config, name="Speed"):
         self.name = name
         self.config = config
 
-    # TODO: Add `required` and `short_name` functionalities
-    def transform(self, required=False, short_name=False):
-        """Transform function parameters into cli arguments"""
+    def transform(self):
+        """Transform function into cli subcommand"""
         def wrapper(component:Callable):
             fargs : Dict  = struct_args(component)
             if mergeable(self.config, fargs):
-                self.config.add_arguments(component, fargs)
+                self.config.add_subcommand(component, fargs)
             
             return component
         return wrapper
 
+
     def run(self):
         pass
     
-    def __repr__(self):
-        #return f"<[ {self.name} ] : {' | '.join([i+': '+str(len(self.config[i])) for i in self.config.keys()])} >"
-        return str(self.config)
 
 

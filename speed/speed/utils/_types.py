@@ -40,4 +40,4 @@ def custom_type(obj):
         return List()
 
     else:
-        raise TypeError("Obj must be a subclass of one of these class: int | str | list | bool")
+        raise TypeError("Argument must be a subclass of one of these class: int | str | list | bool")
