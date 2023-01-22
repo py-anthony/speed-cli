@@ -1,14 +1,13 @@
-speed/speed/core.py/transform(*args, **kwargs): |-- Add type annotation checking
-                                                |-- Add 'only str' validation for default list argument value
-                                                |-- Write tests for 
+speed/speed/core.py/transform(*args, **kwargs): |-- Add type annotation checking | Done
+                                                |-- Add 'only str' validation for default list argument value ( Or just a string conversion for list content)
 
-[ NOTE ] : speed/speed/core.py : Remove the main() function for final version
+[ NOTE ] : speed/speed/core.py : Remove the main() function for final version | Done
 
 #### Tests ####
 speed/speed/tests|-- test_utils.py : Write tests for speed/speed/utils/utils.py/struct_args(*args)
                  |-- test_core.py : |-- Write tests for `Speed` methods
                                     |-- Write tests for `Speed` repr and str
-########
+###############
 
 
 

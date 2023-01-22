@@ -1,58 +1,85 @@
 import sys
-
-from collections import deque
 from wind_parser import Parser
 from .utils import *
 
 # Not yet finished
-class Config:
-    """Configuration for list of possible arguments"""
-    def __init__(self, args:Dict):
-        if not isinstance(args, Dict):
-            raise TypeError("Config arguments must be dictionary")
-        self.args = args
-    
-    def __repr__(self) -> str:
-        return f"Config :\n {self.args}"
+class Config(dict):
+    def __init__(self):
+        super().__init__()
 
+    def add_subcommand(self, function, args:Dict) -> None:
+        args_dict = {}
+        
+        for arg in args:
+            if hasattr(args[arg][0], "BOOL"):
+                args_dict[arg] = args[arg]
+            
+            elif hasattr(args[arg][0], "STR") or hasattr(args[arg][0], "INT"):
+                args_dict[arg] = args[arg]
+            
+            elif hasattr(args[arg][0], "LIST"):
+                args_dict[arg] = args[arg]
+        
+        self[function] = args_dict
+
+
+def is_required(arg:Tuple) -> bool:
+    """Check if the argument is required or not"""
+    return bool(arg.value)
+
+def list_subcommands(config):
+    subcommands = {key.__name__:key for key in config.keys()}
+    return subcommands
 
 class Speed:
     def __init__(self, name="Speed"):
         self.name = name
-        self.registry = {"kwargs": {},"flags": {},"lists": {}}
+        self.config = Config()
+        self.uconfig = {} # Config after user input
 
-    # TODO: Add `required` and `short_name` functionalities
-    def transform(self, required=False, short_name=False):
-        """Transform function parameters into cli arguments"""
+    def transform(self):
+        """Transform function into cli subcommand"""
         def wrapper(component:Callable):
             fargs : Dict  = struct_args(component)
-            if mergeable(self.registry, fargs):
-                for arg in fargs:
-                    if hasattr(fargs[arg][0], "BOOL"):
-                        self.registry["flags"][arg] = fargs[arg]
-                    
-                    elif hasattr(fargs[arg][0], "STR") or hasattr(fargs[arg][0], "INT"):
-                        self.registry["kwargs"][arg] = fargs[arg]
-                    
-                    elif hasattr(fargs[arg][0], "LIST"):
-                        self.registry["lists"][arg] = fargs[arg]
-            return component
+            if mergeable(self.config, fargs):
+                self.config.add_subcommand(component, fargs)
+                
+                self.parse_args()
+                check_values(self.uconfig)
+            
+                return component
         return wrapper
+
+    def parse_args(self):
+        parser = Parser(sys.argv) # Return a dict of all arguments
+        subcommand = parser.subcommand
+        args = parser.args
+
+        _list_subcommands = list_subcommands(self.config)
+
+        if subcommand in _list_subcommands.keys():
+            c = self.config
+            subcommand_args = c[_list_subcommands[subcommand]] # Get args for current subcommand
+            print(subcommand_args)
+
+            for arg in subcommand_args:
+                if hasattr(subcommand_args[arg].type, "BOOL"):
+                    self.uconfig[arg] = Arg(subcommand_args[arg].type, bool(args.get(arg)))
+                
+                elif hasattr(subcommand_args[arg].type, "STR"):
+                    self.uconfig[arg] = Arg(subcommand_args[arg].type, args[arg])
+                
+                elif hasattr(subcommand_args[arg].type, "INT"):
+                    self.uconfig[arg] = Arg(subcommand_args[arg].type, int(args[arg]))
+                
+                elif hasattr(subcommand_args[arg].type, "LIST"):
+                    self.uconfig[arg] = Arg(subcommand_args[arg].type, args[arg])
+
+    def action(self, func, args:Dict):
+        pass
 
     def run(self):
         pass
     
-    def __repr__(self):
-        return f"<[ {self.name} ] : {' | '.join([i+': '+str(len(self.registry[i])) for i in self.registry.keys()])} >"
 
-def main():
-    app = Speed("App")
-
-    @app.transform(required=True, short_name=True)
-    def comp(cities:list = ["1","2","3"],name:str="Anthony", age:int=16):
-        pass
-    
-
-    print(app.registry)
-    print(app)
 
