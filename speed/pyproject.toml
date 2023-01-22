@@ -9,7 +9,7 @@ repository = "https://github.com/anthonyraf/speed-cli"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-wind-parser = "^0.1.1"
+wind-parser = {git = "https://github.com/anthonyraf/wind-parser.git"}
 
 
 [tool.poetry.group.dev.dependencies]
