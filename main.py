@@ -1,18 +1,16 @@
+import sys
 from speed.core import Speed, Config
 
-
 def main():
-    config = Config()
-    app = Speed(name="App", config=config)
+    app = Speed(name="App")
 
-    @app.transform(required=True, short_name=True)
-    def comp(cities:list = ["1","2","3"],name:str="Anthony", age:int=16):
-        print(cities, name, age)
+    @app.transform()
+    def hello(v:bool, name:str, hobbies:list):
+        pass
 
-    d = lambda h: {k:v[1] for (k,v) in h.items()}
-    conf = d(app.config)
-    for i in app.config:
-        i(**conf[i])
+    # print(app.config)
+    print(app.uconfig)
+
 
 if __name__ == '__main__':
     main()

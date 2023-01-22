@@ -1,5 +1,4 @@
 import sys
-
 from wind_parser import Parser
 from .utils import *
 
@@ -8,43 +7,79 @@ class Config(dict):
     def __init__(self):
         super().__init__()
 
-    def add_arguments(self, function, args:Dict) -> None:
-        template = defaultdict(dict)
+    def add_subcommand(self, function, args:Dict) -> None:
+        args_dict = {}
         
         for arg in args:
             if hasattr(args[arg][0], "BOOL"):
-                template["flags"][arg] = args[arg]
+                args_dict[arg] = args[arg]
             
             elif hasattr(args[arg][0], "STR") or hasattr(args[arg][0], "INT"):
-                template["kwargs"][arg] = args[arg]
+                args_dict[arg] = args[arg]
             
             elif hasattr(args[arg][0], "LIST"):
-                template["lists"][arg] = args[arg]
+                args_dict[arg] = args[arg]
         
-        self[function] = template
+        self[function] = args_dict
+
+
+def is_required(arg:Tuple) -> bool:
+    """Check if the argument is required or not"""
+    return bool(arg.value)
+
+def list_subcommands(config):
+    subcommands = {key.__name__:key for key in config.keys()}
+    return subcommands
 
 class Speed:
-    # TODO: Add support for toml or json configuration support (not urgent)
-    def __init__(self, config, name="Speed", file=None):
+    def __init__(self, name="Speed"):
         self.name = name
-        self.config = config
+        self.config = Config()
+        self.uconfig = {} # Config after user input
 
-    # TODO: Add `required` and `short_name` functionalities
-    def transform(self, required=False, short_name=False):
-        """Transform function parameters into cli arguments"""
+    def transform(self):
+        """Transform function into cli subcommand"""
         def wrapper(component:Callable):
             fargs : Dict  = struct_args(component)
             if mergeable(self.config, fargs):
-                self.config.add_arguments(component, fargs)
+                self.config.add_subcommand(component, fargs)
+                
+                self.parse_args()
+                check_values(self.uconfig)
             
-            return component
+                return component
         return wrapper
+
+    def parse_args(self):
+        parser = Parser(sys.argv) # Return a dict of all arguments
+        subcommand = parser.subcommand
+        args = parser.args
+
+        _list_subcommands = list_subcommands(self.config)
+
+        if subcommand in _list_subcommands.keys():
+            c = self.config
+            subcommand_args = c[_list_subcommands[subcommand]] # Get args for current subcommand
+            print(subcommand_args)
+
+            for arg in subcommand_args:
+                if hasattr(subcommand_args[arg].type, "BOOL"):
+                    self.uconfig[arg] = Arg(subcommand_args[arg].type, bool(args.get(arg)))
+                
+                elif hasattr(subcommand_args[arg].type, "STR"):
+                    self.uconfig[arg] = Arg(subcommand_args[arg].type, args[arg])
+                
+                elif hasattr(subcommand_args[arg].type, "INT"):
+                    self.uconfig[arg] = Arg(subcommand_args[arg].type, int(args[arg]))
+                
+                elif hasattr(subcommand_args[arg].type, "LIST"):
+                    self.uconfig[arg] = Arg(subcommand_args[arg].type, args[arg])
+
+    def action(self, func, args:Dict):
+        pass
 
     def run(self):
         pass
     
-    def __repr__(self):
-        #return f"<[ {self.name} ] : {' | '.join([i+': '+str(len(self.config[i])) for i in self.config.keys()])} >"
-        return str(self.config)
 
 

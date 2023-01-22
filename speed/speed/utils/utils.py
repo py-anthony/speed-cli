@@ -1,8 +1,12 @@
 import inspect
-from typing import Dict, List, Union, Callable
-from collections import deque, defaultdict
+from typing import Dict, List, Union, Callable, Tuple
+from collections import deque, defaultdict, namedtuple
 from pprint import pprint
 from ._types import custom_type
+
+
+Arg = namedtuple("Arg", ["type", "value"]) # For storing the argument type and value
+
 
 def check_args(u_args:Dict, config_args:Dict):
     """Check if the user args exist in the defined args otherwise raise an Error.
@@ -47,12 +51,24 @@ def struct_args(function:Callable):
     function_spec = inspect.getfullargspec(function)
     check_annotations(function_spec)  # Check if all function parameters has type annotation
     structured_data = {}
-
-    defaults = deque(function_spec.defaults)
     args = function_spec.args
-    defaults.extendleft([None]*(len(args)-len(defaults)))
+
+
+    if function_spec.defaults:
+        defaults = deque(function_spec.defaults)
+        defaults.extendleft([None]*(len(args)-len(defaults)))
+    else:
+        defaults = [None]*len(args)
 
     for i in range(len(args)):
-        structured_data[args[i]] = (custom_type(function_spec.annotations[args[i]]), defaults[i])
+        structured_data[args[i]] = Arg(custom_type(function_spec.annotations[args[i]]), defaults[i])
     
     return structured_data
+
+def check_values(uconfig:dict):
+    """Check if there are no required argument that are not have value in the config after parsing the arguments"""
+    for key in uconfig:
+        if uconfig[key].value is None:
+            raise ValueError(f"Argument '{key}' is required")
+    
+    return True
