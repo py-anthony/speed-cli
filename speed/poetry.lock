@@ -136,7 +136,7 @@ develop = false
 type = "git"
 url = "https://github.com/anthonyraf/wind-parser.git"
 reference = "HEAD"
-resolved_reference = "c77b217ae89bde384b6a93b616ea2a247320af25"
+resolved_reference = "f9a9473745b442cc1e3169bccb68e02a1186fbb1"
 
 [metadata]
 lock-version = "2.0"
