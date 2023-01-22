@@ -1,14 +1,15 @@
+import sys
 from speed.core import Speed, Config
 
 def main():
-    config = Config()
-    app = Speed(name="App", config=config)
+    app = Speed(name="App")
 
     @app.transform()
-    def hello(name: str, hobbies: list, is_student: bool, age: int):
+    def hello(v:bool, name:str, hobbies:list):
         pass
 
-    print(app.config)
+    # print(app.config)
+    print(app.uconfig)
 
 
 if __name__ == '__main__':
