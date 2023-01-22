@@ -1,6 +1,7 @@
 import sys
 from wind_parser import Parser
 from .utils import *
+from .utils.checkers import is_required
 
 # Not yet finished
 class Config(dict):
@@ -11,21 +12,18 @@ class Config(dict):
         args_dict = {}
         
         for arg in args:
-            if hasattr(args[arg][0], "BOOL"):
+            a_type = args[arg].type
+            if a_type.is_bool():
                 args_dict[arg] = args[arg]
             
-            elif hasattr(args[arg][0], "STR") or hasattr(args[arg][0], "INT"):
+            elif a_type.is_str() or a_type.is_int():
                 args_dict[arg] = args[arg]
             
-            elif hasattr(args[arg][0], "LIST"):
+            elif a_type.is_list():
                 args_dict[arg] = args[arg]
         
         self[function] = args_dict
 
-
-def is_required(arg:Tuple) -> bool:
-    """Check if the argument is required or not"""
-    return bool(arg.value)
 
 def list_subcommands(config):
     subcommands = {key.__name__:key for key in config.keys()}
@@ -37,7 +35,7 @@ class Speed:
         self.config = Config()
         self.uconfig = {} # Config after user input
 
-    def transform(self):
+    def subcommand(self):
         """Transform function into cli subcommand"""
         def wrapper(component:Callable):
             fargs : Dict  = struct_args(component)
@@ -49,6 +47,16 @@ class Speed:
             
                 return component
         return wrapper
+    
+    def argument(self):
+        """Directly add argument to the main program by default without using subcommand.
+        ex:
+            python main.py --argument1
+                or 
+            python main.py --help
+        The function name doesn't matter when using this decorator.
+        """
+        pass
 
     def parse_args(self):
         parser = Parser(sys.argv) # Return a dict of all arguments
@@ -63,17 +71,18 @@ class Speed:
             print(subcommand_args)
 
             for arg in subcommand_args:
-                if hasattr(subcommand_args[arg].type, "BOOL"):
-                    self.uconfig[arg] = Arg(subcommand_args[arg].type, bool(args.get(arg)))
+                a_type = subcommand_args[arg].type
+                if a_type.is_bool():
+                    self.uconfig[arg] = Arg(a_type, bool(args.get(arg)))
                 
-                elif hasattr(subcommand_args[arg].type, "STR"):
-                    self.uconfig[arg] = Arg(subcommand_args[arg].type, args[arg])
+                elif a_type.is_str():
+                    self.uconfig[arg] = Arg(a_type, args[arg])
                 
-                elif hasattr(subcommand_args[arg].type, "INT"):
-                    self.uconfig[arg] = Arg(subcommand_args[arg].type, int(args[arg]))
+                elif a_type.is_int():
+                    self.uconfig[arg] = Arg(a_type, int(args[arg]))
                 
-                elif hasattr(subcommand_args[arg].type, "LIST"):
-                    self.uconfig[arg] = Arg(subcommand_args[arg].type, args[arg])
+                elif a_type.is_list():
+                    self.uconfig[arg] = Arg(a_type, args[arg])
 
     def action(self, func, args:Dict):
         pass
