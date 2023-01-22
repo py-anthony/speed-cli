@@ -35,14 +35,22 @@ class Speed:
         self.config = Config()
         self.uconfig = {} # Config after user input
 
-    def subcommand(self):
-        """Transform function into cli subcommand"""
+    def subcommand(self, debug=False):
+        """Transform function into CLI subcommand"""
         def wrapper(component:Callable):
             fargs : Dict  = struct_args(component)
             if mergeable(self.config, fargs):
-                self.config.add_subcommand(component, fargs)
+                custom_function = CustomFunction(component) # Change __repr__ of the function
+                self.config.add_subcommand(custom_function, fargs)
                 
+                if debug:
+                    logging.debug(f"Subcommand[{component.__name__}] args : {self.config[custom_function]}")
+            
                 self.parse_args()
+                
+                if debug:
+                    logging.debug(f"Subcommand[{component.__name__}] args after parsing : {self.uconfig}\n")
+                
                 check_values(self.uconfig)
             
                 return component
@@ -68,7 +76,6 @@ class Speed:
         if subcommand in _list_subcommands.keys():
             c = self.config
             subcommand_args = c[_list_subcommands[subcommand]] # Get args for current subcommand
-            print(subcommand_args)
 
             for arg in subcommand_args:
                 a_type = subcommand_args[arg].type
@@ -87,8 +94,14 @@ class Speed:
     def action(self, func, args:Dict):
         pass
 
+    def debug(self):
+        logging.debug(f"Subcommands list : {list_subcommands(self.config)}")
+
     def run(self):
         pass
+    
+    def __repr__(self):
+        return f"[{self.name}] : Subcommands : {' | '.join(list(map(lambda f:f.__name__,self.config.keys())))}"
     
 
 

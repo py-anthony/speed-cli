@@ -1,7 +1,7 @@
 {
     "python.linting.enabled": false,
     "python.testing.pytestArgs": [
-        "."
+        "speed"
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true
