@@ -129,12 +129,16 @@ description = "Python wind parser is a parser used to retrieve arguments for com
 category = "main"
 optional = false
 python-versions = ">=3.8"
-files = [
-    {file = "wind_parser-0.1.1-py3-none-any.whl", hash = "sha256:3d8f23d50889ffa1032aadfc161bde1b7a355251ac97170b62a36587449a491d"},
-    {file = "wind_parser-0.1.1.tar.gz", hash = "sha256:37b6798b2e1da4dda0c1cf7d784ec3d0bafe4ba341798c4ff5f18a4768f0cd11"},
-]
+files = []
+develop = false
+
+[package.source]
+type = "git"
+url = "https://github.com/anthonyraf/wind-parser.git"
+reference = "HEAD"
+resolved_reference = "c77b217ae89bde384b6a93b616ea2a247320af25"
 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "973899f8d08bf2f0eb4e57ca2c4138901a164373f7f62012913bd4c255f117b2"
+content-hash = "a8f68b725f24514d7c578862441db9921e557f118b9d0e29797eac923e3d5e3e"
