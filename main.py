@@ -6,16 +6,22 @@ from speed.core import Speed, Config
 def main():
     app = Speed(name="App")
 
-    @app.subcommand(debug=True)
+    @app.subcommand(debug=False)
     def hello(v:bool, name:str, hobbies:list):
-        pass
-    
-    @app.subcommand(debug=True)
-    def hello2(name:str, age:int):
-        pass
+        if v:
+            print(f"Hello {name}, your hobbies are {hobbies}, I'm glad to meet you!")
+        else:
+            print(f"Hello {name}!")
+
+    @app.subcommand(debug=False)
+    def hello2(message:bool):
+        if message:
+            print("You activate the message flag")
+        else:
+            print("You didn't activate the message flag")
 
     # print(app.config)
-    print(app)
+    app.run()
 
 
 if __name__ == '__main__':

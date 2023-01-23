@@ -34,6 +34,7 @@ class Speed:
         self.name = name
         self.config = Config()
         self.uconfig = {} # Config after user input
+        self.current_subcommand = None
 
     def subcommand(self, debug=False):
         """Transform function into CLI subcommand"""
@@ -45,13 +46,6 @@ class Speed:
                 
                 if debug:
                     logging.debug(f"Subcommand[{component.__name__}] args : {self.config[custom_function]}")
-            
-                self.parse_args()
-                
-                if debug:
-                    logging.debug(f"Subcommand[{component.__name__}] args after parsing : {self.uconfig}\n")
-                
-                check_values(self.uconfig)
             
                 return component
         return wrapper
@@ -66,16 +60,14 @@ class Speed:
         """
         pass
 
-    def parse_args(self):
+    def parse_args(self, args:List[str], subcommand:str):
         parser = Parser(sys.argv) # Return a dict of all arguments
-        subcommand = parser.subcommand
-        args = parser.args
 
         _list_subcommands = list_subcommands(self.config)
 
         if subcommand in _list_subcommands.keys():
             c = self.config
-            subcommand_args = c[_list_subcommands[subcommand]] # Get args for current subcommand
+            subcommand_args = c[_list_subcommands[subcommand]]
 
             for arg in subcommand_args:
                 a_type = subcommand_args[arg].type
@@ -91,14 +83,22 @@ class Speed:
                 elif a_type.is_list():
                     self.uconfig[arg] = Arg(a_type, args[arg])
 
-    def action(self, func, args:Dict):
-        pass
+    def execute(self, subcommand_function, uconfig):
+        """Execute the subcommand with the arguments after parsing user input"""
+        kwargs = {name:arg.value for name,arg in uconfig.items()} # Get a dictionary of function keyword arguments after parsing user input
 
-    def debug(self):
-        logging.debug(f"Subcommands list : {list_subcommands(self.config)}")
+        subcommand_function(**kwargs) # Call the function with the keyword arguments
+
 
     def run(self):
-        pass
+        parser = Parser(sys.argv)
+        subcommand = parser.subcommand
+        args = parser.args
+        _list_subcommands = list_subcommands(self.config)
+        subcommand_function = _list_subcommands[subcommand]
+
+        self.parse_args(args, subcommand)
+        self.execute(subcommand_function, self.uconfig)
     
     def __repr__(self):
         return f"[{self.name}] : Subcommands : {' | '.join(list(map(lambda f:f.__name__,self.config.keys())))}"
