@@ -3,6 +3,8 @@ from typing import Dict, List, Union, Callable, Tuple
 from collections import deque, defaultdict, namedtuple
 from pprint import pprint
 from ._types import custom_type
+from .logging_config import *
+
 
 
 Arg = namedtuple("Arg", ["type", "value"]) # For storing the argument type and value
@@ -72,3 +74,19 @@ def check_values(uconfig:dict):
             raise ValueError(f"Argument '{key}' is required")
     
     return True
+
+class CustomFunction:
+    """Custom function class to overwrite a function __repr__ and __str__
+    NOTE: This is only for debugging purpose
+    """
+    def __init__(self, function):
+        self.function = function
+        self.__name__ = function.__name__
+    
+    def __call__(self, *args, **kwargs):
+        return self.function(*args, **kwargs)
+    
+    def __repr__(self):
+        return f"<function : '{self.function.__name__}'>"
+
+
