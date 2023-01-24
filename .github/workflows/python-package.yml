@@ -33,4 +33,4 @@ jobs:
 
     - name: Test with pytest
       run: |
-        poetry run pytest -v
+        poetry --project=speed run pytest -v
