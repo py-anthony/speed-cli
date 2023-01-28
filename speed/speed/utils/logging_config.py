@@ -10,5 +10,3 @@ coloredlogs.install(level=logging.DEBUG, logger=logger,
                                   'warning': {'color': 'yellow'},
                                   'error': {'color': 'red'},
                                   'critical': {'color': 'red', 'bold': True}})
-
-# %(asctime)s - 
