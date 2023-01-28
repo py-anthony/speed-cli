@@ -1,8 +1,14 @@
 {
+    "editor.fontFamily": "Monolisa Light",
+    "editor.lightbulb.enabled": true,
+    "editor.fontLigatures": true,
     "python.linting.enabled": false,
     "python.testing.pytestArgs": [
         "speed"
     ],
     "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true
+    "python.testing.pytestEnabled": true,
+    "githubPullRequests.ignoredPullRequestBranches": [
+        "main"
+    ]
 }

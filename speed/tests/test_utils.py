@@ -1,6 +1,6 @@
 import pytest
 import inspect
-from speed.utils import check_args, mergeable, check_annotations
+from speed.utils import  mergeable, check_annotations
 
 
 def test_check_args():

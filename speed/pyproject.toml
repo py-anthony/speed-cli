@@ -10,6 +10,7 @@ repository = "https://github.com/anthonyraf/speed-cli"
 [tool.poetry.dependencies]
 python = "^3.10"
 wind-parser = {git = "https://github.com/anthonyraf/wind-parser.git"}
+colorama = "^0.4.6"
 
 
 [tool.poetry.group.dev.dependencies]

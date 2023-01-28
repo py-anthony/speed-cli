@@ -23,7 +23,7 @@ tests-no-zope = ["cloudpickle", "cloudpickle", "hypothesis", "hypothesis", "mypy
 name = "colorama"
 version = "0.4.6"
 description = "Cross-platform colored terminal text."
-category = "dev"
+category = "main"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*,>=2.7"
 files = [
@@ -169,7 +169,7 @@ files = [
 
 [[package]]
 name = "wind-parser"
-version = "0.1.1"
+version = "0.1.2"
 description = "Python wind parser is a parser used to retrieve arguments for command line interfaces and turn them into python dictionary"
 category = "main"
 optional = false
@@ -181,9 +181,9 @@ develop = false
 type = "git"
 url = "https://github.com/anthonyraf/wind-parser.git"
 reference = "HEAD"
-resolved_reference = "f9a9473745b442cc1e3169bccb68e02a1186fbb1"
+resolved_reference = "582cb4727869690df9d643a86410019cc0efd9bc"
 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "6811d47fd76fd57d8ff869cd7865f6d915e640d407a96d82a1e5d4002b5bdb87"
+content-hash = "ae98a8c17111d702ddbb032175f959eb32ba8771eb43d3b2372fc2c3758d1739"
