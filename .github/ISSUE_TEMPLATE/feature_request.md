@@ -1,7 +1,7 @@
 ---
 name: Feature request
 about: Suggest an idea for this project
-title: 'ex. [FEATURE] : Need full screen support'
+title: 'ex. [FEATURE] : '
 labels: ''
 assignees: ''
 
