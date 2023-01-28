@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: 'ex. [BUG] : Infinite loop'
+title: '[BUG] : '
 labels: ''
 assignees: ''
 
@@ -25,7 +25,7 @@ If applicable, add screenshots to help explain your problem.
 
 **Desktop (please complete the following information):**
  - OS: [e.g. Ubuntu]
- - Python version [e.g. 3.11.0]
+ - Python version: [e.g. 3.11.0]
 
 **Additional context**
 Add any other context about the problem here.
