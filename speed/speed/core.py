@@ -1,8 +1,8 @@
 import sys
 from wind_parser import Parser
 from .utils import *
-from .utils.checkers import is_required
 from .utils.colors import *
+from .utils.checkers import TypeChecker
 
 class SubcommandsDict(dict):
     def __init__(self) -> None:
@@ -83,16 +83,25 @@ class Speed:
         Exception if the subcommand doesn't exist.
 
         """
-        if subcommand in self.config.keys():
-        
-            subcommand_args = self.config[subcommand].args
 
+        if subcommand in self.config.keys():
+
+            subcommand_args = self.config[subcommand].args
+            
             for arg in args:
                 if arg not in subcommand_args.keys():
                     Error(f"Option '{arg}' unknown")
                     exit()
                 arg_type = subcommand_args[arg].type
                 arg_value = args[arg]
+
+                try:
+                    TypeChecker.check(arg, Arg(arg_type, arg_value))
+
+                except Exception as msg:
+                    
+                    Error(str(msg))
+                    exit()
 
                 if arg_type.is_bool():
                     self.config[subcommand].args[arg] = Arg(arg_type, bool(arg_value))
@@ -128,6 +137,7 @@ class Speed:
         parser = Parser(sys.argv)
 
         args = parser.args # Subcommands arguments from the parser
+
         try:
             subcommand = parser.subcommand # Subcommand name from the parser
             
@@ -144,7 +154,7 @@ class Speed:
                     exit()
         
         self.parse_args(args, subcommand)
-        check_required_arguments(self.config[subcommand].args)
+        check_required_arguments(self.config[subcommand].args) # Check if all required arguments are specified
         
         try:
             self.execute(self.config[subcommand])

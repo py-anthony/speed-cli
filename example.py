@@ -19,5 +19,16 @@ def generate(rows:int,cols:int):
         print("|"+"   |"*cols)
     print("+"+"---+"*cols)   
 
+@cli.subcommand()
+def sum(numbers:list):
+    """
+    Sum all the numbers in the list
+    """
+    
+    res = 0
+    for i in numbers:
+        res += int(i)
+    print(res)
+
 if __name__ == '__main__':
     cli.run()
