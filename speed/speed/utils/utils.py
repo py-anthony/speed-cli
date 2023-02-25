@@ -2,7 +2,7 @@ import inspect
 from typing import Dict, List, Union, Callable, Tuple
 from collections import deque, defaultdict, namedtuple
 from pprint import pprint
-from ._types import custom_type
+from .types import custom_type
 from .logging_config import *
 from .colors import *
 

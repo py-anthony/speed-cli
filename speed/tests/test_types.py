@@ -1,5 +1,5 @@
 import pytest
-from speed.utils._types import Int, Bool, Str, List, custom_type
+from speed.utils.types import Int, Bool, Str, List, custom_type
 
 class TestCustomType:
     def test_int(self):

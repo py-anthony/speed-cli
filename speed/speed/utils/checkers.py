@@ -1,5 +1,5 @@
 from .utils import *
-from ._types import *
+from .types import *
 # Future implementation
 
 
@@ -22,7 +22,7 @@ class TypeChecker:
             try: 
                 int(arg.value)
             except TypeError:
-                print(arg.value)
+                raise Exception(f"Value of {arg_name} must be a valid integer")
             
         elif arg.type.is_str():
             if not isinstance(arg.value, str):
